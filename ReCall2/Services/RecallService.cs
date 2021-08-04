@@ -53,5 +53,33 @@ namespace ReCall2.Services
         {
             return await sqsAwsService.DeleteMessage(sqsId);
         }
+
+        public async Task<bool> Save(Recall recall)
+        {
+            if (recall.Vins != null && recall.Vins.Count == 1 && recall.Vins[0] != null && recall.Vins[0].Contains(","))
+            {
+                string[] vins = recall.Vins[0].Split(',');
+                recall.Vins.Clear();
+                foreach (string vin in vins)
+                {
+                    recall.Vins.Add(vin.Trim());
+                }
+            }
+
+            recall.Translations = new Translation()
+            {
+                EnUs = new Country()
+                {
+                    Title = recall.Title,
+                    Text = recall.Text,
+                    ThankYouMessage = recall.ThankYouMessage
+                }
+            };
+
+            recall.EventDate = DateTime.Parse(recall.EventDate).AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Millisecond).AddSeconds(DateTime.Now.Second).ToString();
+
+            return await sqsAwsService.SendAWSSQS(recall);
+
+        }
     }
 }

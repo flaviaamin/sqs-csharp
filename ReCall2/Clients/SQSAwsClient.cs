@@ -12,9 +12,9 @@ using ReCall2.Models;
 
 namespace ReCall2.Clients
 {
-    public class SQSAws
+    public class SQSAwsClient
     {
-        public SQSAws(string awsId, string awsKey, string hostSqs, string sqsId, string sqsName)
+        public SQSAwsClient(string awsId, string awsKey, string hostSqs, string sqsId, string sqsName)
         {
             this.awsId = awsId;
             this.awsKey = awsKey;
