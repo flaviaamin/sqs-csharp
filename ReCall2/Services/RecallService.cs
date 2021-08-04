@@ -13,15 +13,15 @@ namespace ReCall2.Services
 {
     public class RecallService
     {
-        public RecallService()
+        public RecallService(string fila)
         {
             JToken jAppSettings = JToken.Parse(System.IO.File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "appsettings.json")));
             this.sqsAwsService = new SQSAwsClient(
                 jAppSettings["awsId"].ToString(),
                 jAppSettings["awsKey"].ToString(),
-                jAppSettings["hostSqs"].ToString(),
-                jAppSettings["sqsId"].ToString(),
-                jAppSettings["sqsName"].ToString()
+                jAppSettings["filas"][fila]["hostSqs"].ToString(),
+                jAppSettings["filas"][fila]["sqsId"].ToString(),
+                jAppSettings["filas"][fila]["sqsName"].ToString()
             );
         }
 
