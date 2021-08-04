@@ -23,7 +23,7 @@ namespace ReCall2.Services
                 JToken jAppSettings = JToken.Parse(System.IO.File.ReadAllText(pathFile));
                 awsId = jAppSettings["awsId"].ToString();
                 awsKey = jAppSettings["awsKey"].ToString();
-                hostSqs = jAppSettings["filas"][fila]["hostSqs"].ToString();
+                hostSqs = jAppSettings["filas"][fila]["sqsHost"].ToString();
                 sqsId = jAppSettings["filas"][fila]["sqsId"].ToString();
                 sqsName = jAppSettings["filas"][fila]["sqsName"].ToString();
             }
@@ -31,7 +31,7 @@ namespace ReCall2.Services
             {
                 awsId = Environment.GetEnvironmentVariable("AWS_ID");
                 awsKey = Environment.GetEnvironmentVariable("AWS_KEY");
-                hostSqs = Environment.GetEnvironmentVariable($"{fila}_HOST_SQS");
+                hostSqs = Environment.GetEnvironmentVariable($"{fila}_SQS_HOST");
                 sqsId = Environment.GetEnvironmentVariable($"{fila}_SQS_ID");
                 sqsName = Environment.GetEnvironmentVariable($"{fila}_SQS_NAME");
             }
