@@ -1,0 +1,194 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_LayoutRegister";
+}
+
+<script>
+    var hora;
+    function validateFields() {
+        if ($("input[name=market]").val() == "") {
+            alert("The market field is not populated.");
+            $("input[name=market]").focus();
+            return false;
+        }
+
+        return true;
+       
+    }
+    function validateFieldsTitle() {
+        if ($("input[name=title]").val() == "") {
+            alert("The title field is not populated.");
+            $("input[name=title]").focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function updateId() {
+        let data = $("#dateTest").val();
+    
+        dataFormatada = data.replace(/-| |:|T/g, "");
+        let idFormatado = "TEST-" + $("#market").val().toUpperCase() + "-" + dataFormatada+hora;
+        $("#id").val(idFormatado);
+
+    }
+
+    function updateDate(x) {
+        var date = new Date(x.value);
+        var newDate = new Date(date.setMonth(date.getMonth() + 2));
+        var newDateTo = new Date(date.setMonth(date.getMonth()-2));
+        var formatter = new Intl.DateTimeFormat('pt-BR');
+        var date = new Date();
+        formatter.format(newDate);
+        document.getElementById("idFrom").value = newDate.toISOString().slice(0, 10);
+        document.getElementById("idTo").value = newDateTo.toISOString().slice(0, 10);
+        
+    }
+
+
+
+    $(document).ready(function () {
+        const date = new Date();
+         hora = `${date.getHours()}${date.getMinutes()}${date.getSeconds()}`
+
+        $("#dateTest").datepicker({
+            format: 'yyyy-mm-dd'
+        });
+
+        $("#dateTest").datepicker('setDate', date);
+        $("#idFrom").datepicker({
+            format: 'yyyy-mm-dd'
+        });
+        $("#idTo").datepicker({
+            format: 'yyyy-mm-dd'
+        });
+
+        $('.format-date').datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: '+0d'
+        });
+        var newDate = new Date(date.setMonth(date.getMonth() + 2));
+        $("#idFrom").datepicker('setDate', date);
+
+
+
+        updateId();
+    })
+
+
+
+
+</script>
+    <div class="mb-3">
+        <label for="description" class="form-label" style="margin-top:20px"> Create Message</label>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+    <div class="row">
+        <div class="col">
+            <label for="market" class="form-label">Market</label>
+            <input type="text" name="market" id="market" onblur="updateId()" class="form-control" aria-label="Market" value="BR" required/>
+        </div>
+        <div class="col">
+            <label for="dateTest" class="form-label">Creation Date</label>
+            <input type="text" name="EventDate" onchange="updateDate(this)" class="form-control format-date" id="dateTest" onblur="updateId()" aria-label="Creation Date" required/>
+
+        </div>
+
+
+        <div class="col">
+            <label for="id" class="form-label">Campaign ID</label>
+            <input type="text" name="CampaignId" id="id" class="form-control" aria-label="Campaing ID" value="TEST-BR-20210623114312" required/>
+        </div>
+    </div>
+
+
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <div class="row">
+        <div class="col">
+            <label for="title" class="form-label" style="margin-top:20px">Title</label>
+            <input type="text" name="Title" id="title" class="form-control" aria-label="Title" value="TEST RECALL Title" required/>
+        </div>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+    <div class="mb-3">
+        <label for="thankYouMessage" class="form-label" style="margin-top:20px">Thank You Message</label>
+        <div class="mb-3">
+            <textarea type="text" name="ThankYouMessage" required id="thankYouMessage" rows="1" class="form-control" aria-label="ThankYouMessage">TEST RECALL Thank you message</textarea>
+        </div>
+
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+    <div class="mb-3">
+        <label for="text" class="form-label">Description</label>
+        <textarea class="form-control" name ="Text" required id="text" rows="5" aria-label="text">TEST RECALL
+Dear BMW Driver, your vehicle is affected by a Safety Recall.
+We need to inspect and/or repair your vehicle. Please book an appointment at your BMW authorized workshop, who will be able to give you more detailed information.
+Thank you.</textarea>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+    <div class="row">
+        <div class="col">
+            <label for="visibleTo" class="form-label">Visible From</label>
+            <input type="text" name ="VisibleFromDate" class="form-control" id="idTo" onblur="updateId()" aria-label="VisibleFrom"  required>
+
+        </div>
+        <div class="col">
+            <label for="idFrom" class="form-label">Visible To</label>
+            <input type="text" name="VisibleToDate" class="form-control format-date" id="idFrom" onblur="updateId()" aria-label="Visible To" required>
+        </div>
+
+        <div class="col">
+            <label for="callN" class="form-label">Call Number</label>
+            <input type="text" name="CallNumber" class="form-control cep-mask" id="callN" aria-label="call number" value="999-999-9999" placeholder="Ex.: 999-999-9999" required>
+
+        </div>
+    </div>
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <div class="row">
+        <div class="col">
+            <label for="default" class="form-label" style="margin-top:20px">Default Language</label>
+            <input type="text" name="DefaultLanguage" class="form-control" id="default" aria-label="defaultLanguage" value="en-us" required>
+        </div>
+
+        <div class="col">
+            <label for="version" class="form-label" style="margin-top:20px">Version</label>
+            <input type="text" name="Version" class="form-control" id="version" aria-label="Version" value="1" pattern="[0-9]+$" required>
+        </div>
+    </div>
+
+    
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <div class="mb-3">
+        <label for="vin" class="form-label" style="margin-top:20px">VINs</label>
+        <textarea class="form-control" name ="vins" id="vin" rows="3"></textarea>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------->
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="callDealer" value="CallDealer"  name="ConnectedAppActionButtons">
+        <label class="form-check-label" for="callDealer">
+            Call dealer
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="scheduleAppointment" value ="ScheduleAppointment" name="ConnectedAppActionButtons"> 
+        <label class="form-check-label"  for="scheduleAppointment">
+            Schedule Appointment
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="OpenRecallWebsite" value ="OpenRecallWebsite" name="ConnectedAppActionButtons">
+        <label class="form-check-label"  for="OpenRecallWebsite">
+            Open Recall Website
+        </label>
+    </div>
+    <!----------------------------------------------------------------------------------------------------------------->
+
+    <button type="submit" class="btn btn-dark" style="margin-top:20px">Send Call</button>
+

@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "List";
+    var lista = (List<Recall>)ViewBag.Lista;
+}
+
+<div class="mb-3">
+    <label for="description" class="form-label" style="margin-top:20px">List Campaign</label>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Campaign Id</th>
+            <th scope="col">ReceiptHandle</th>
+            <th scope="col">EventDate</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Recall recall in lista)
+        {
+        <tr>
+            <th scope="row">@recall.CampaignId</th>
+            <td>
+                <div style="width:200px;overflow:scroll">
+                    @recall.SQSId
+                </div>
+            </td>
+            <td>@recall.EventDate</td>
+            <td>
+                <form method="post" action="/recall/sqsdel" onsubmit="return confirm('Confirms?')">
+                    <input type="hidden" value="@recall.SQSId" name="sqsId" />
+                    <button class="btn btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
