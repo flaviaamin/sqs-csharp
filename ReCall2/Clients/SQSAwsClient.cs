@@ -10,7 +10,7 @@ using System.IO;
 using System.Text.Json;
 using ReCall2.Models;
 
-namespace ReCall2.Services
+namespace ReCall2.Clients
 {
     public class SQSAws
     {

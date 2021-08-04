@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ReCall2.Clients;
 using ReCall2.Models;
 using ReCall2.Services;
 using System;
@@ -19,15 +20,8 @@ namespace ReCall2.Controllers
 
         public RecallController(ILogger<HomeController> logger)
         {
+            recallService = new RecallService();
             _logger = logger;
-
-            JToken jAppSettings = JToken.Parse(System.IO.File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "appsettings.json")));
-            this.sqsAwsService = new SQSAws(
-                jAppSettings["awsId"].ToString(),
-                jAppSettings["awsKey"].ToString(),
-                jAppSettings["hostSqs"].ToString(),
-                jAppSettings["sqsId"].ToString(),
-                jAppSettings["sqsName"].ToString());
         }
 
         public IActionResult Index()
@@ -35,35 +29,18 @@ namespace ReCall2.Controllers
             return View();
         }
 
-        private SQSAws sqsAwsService;
+        private RecallService recallService;
 
         public async Task<IActionResult> List()
         {
-            var lista = await sqsAwsService.ListAWSSQS();
-            var recalls = new List<Recall>();
-
-            if (lista != null)
-            {
-                foreach (Message message in lista)
-                {
-                    try
-                    {
-                        var recall = JsonSerializer.Deserialize<Recall>(message.Body);
-                        recall.SQSId = message.ReceiptHandle;
-                        recalls.Add(recall);
-                    }
-                    catch { }
-                }
-            }
-
-            ViewBag.Lista = recalls;
+            ViewBag.Lista = await recallService.Recalls();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SQSDel([FromForm] Recall recall)
         {
-            var success = await sqsAwsService.DeleteMessage(recall.SQSId);
+            var success = await recallService.DeleteRecall(recall.SQSId);
             if (success)
             {
                 Console.WriteLine("successfully deleted");
@@ -78,29 +55,7 @@ namespace ReCall2.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(Recall recall)
         {
-            if (recall.Vins != null && recall.Vins.Count == 1 && recall.Vins[0] != null && recall.Vins[0].Contains(","))
-            {
-                string[] vins = recall.Vins[0].Split(',');
-                recall.Vins.Clear();
-                foreach (string vin in vins)
-                {
-                    recall.Vins.Add(vin.Trim());
-                }
-            }
-
-            recall.Translations = new Translation()
-            {
-                EnUs = new Country()
-                {
-                    Title = recall.Title,
-                    Text = recall.Text,
-                    ThankYouMessage = recall.ThankYouMessage
-                }
-            };
-
-            recall.EventDate = DateTime.Parse(recall.EventDate).AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Millisecond).AddSeconds(DateTime.Now.Second).ToString();
-
-            var success = await sqsAwsService.SendAWSSQS(recall);
+            var success = await recallService.Save(recall);
 
             if (success)
             {
