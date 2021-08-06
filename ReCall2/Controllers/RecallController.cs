@@ -20,7 +20,7 @@ namespace ReCall2.Controllers
 
         public RecallController(ILogger<HomeController> logger)
         {
-            recallService = new RecallService("FLAVIA");
+            recallService = new RecallService();
             _logger = logger;
         }
 

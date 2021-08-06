@@ -13,35 +13,14 @@ namespace ReCall2.Services
 {
     public class RecallService
     {
-        public RecallService(string fila)
+        public RecallService()
         {
-            string awsId, awsKey, hostSqs, sqsId, sqsName;
-
-            var pathFile = Path.Combine(Environment.CurrentDirectory, "appsettings.json");
-            if (File.Exists(pathFile))
-            {
-                JToken jAppSettings = JToken.Parse(System.IO.File.ReadAllText(pathFile));
-                awsId = jAppSettings["awsId"].ToString();
-                awsKey = jAppSettings["awsKey"].ToString();
-                hostSqs = jAppSettings["filas"][fila]["sqsHost"].ToString();
-                sqsId = jAppSettings["filas"][fila]["sqsId"].ToString();
-                sqsName = jAppSettings["filas"][fila]["sqsName"].ToString();
-            }
-            else
-            {
-                awsId = Environment.GetEnvironmentVariable("AWS_ID");
-                awsKey = Environment.GetEnvironmentVariable("AWS_KEY");
-                hostSqs = Environment.GetEnvironmentVariable($"{fila}_SQS_HOST");
-                sqsId = Environment.GetEnvironmentVariable($"{fila}_SQS_ID");
-                sqsName = Environment.GetEnvironmentVariable($"{fila}_SQS_NAME");
-            }
-
             this.sqsAwsService = new SQSAwsClient(
-                awsId,
-                awsKey,
-                hostSqs,
-                sqsId,
-                sqsName
+                ConfigManager.AwsId,
+                ConfigManager.AwsKey,
+                ConfigManager.SqsHost,
+                ConfigManager.SqsId,
+                ConfigManager.SqsName
             );
         }
 
