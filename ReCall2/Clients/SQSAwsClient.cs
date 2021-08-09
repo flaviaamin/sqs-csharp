@@ -40,6 +40,11 @@ namespace ReCall2.Clients
             return (response.HttpStatusCode == System.Net.HttpStatusCode.OK) ? response.Messages : null;
         }
 
+        public async Task<int> TotalQueue()
+        {
+            return (await this.ListAWSSQS()).Count;
+        }
+
         public async Task<bool> DeleteMessage(string sqsId)
         {
             AmazonSQSClient sq = new AmazonSQSClient(awsId, awsKey);

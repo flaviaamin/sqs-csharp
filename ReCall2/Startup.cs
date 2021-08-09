@@ -72,7 +72,7 @@ namespace ReCall2
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Recall}/{action=Queues}/{id?}");
             });
         }
     }

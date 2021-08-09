@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "List";
+    var lista = (List<Recall>)ViewBag.Lista;
+}
+
+<div class="mb-3">
+    <label for="description" class="form-label" style="margin-top:20px">Queues</label>
+</div>
+
+<style>
+    .card-title {
+        background: #ccc;
+        text-align: center;
+        padding: 10px;
+    }
+    .card {
+        width: 18rem;
+        padding: 0px;
+        margin: 0px 2px 0px 2px;
+    }
+    .card-body{
+        font-size: 12px;
+    }
+</style>
+
+<div class="row">
+    <div class="card">
+        <h5 class="card-title">Create Message</h5>
+        <div class="card-body">
+            <div>
+                <div>ApproximateNumberOfMenssages: <b>@ViewBag.TotalQueue</b></div>
+                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div>
+                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card col">
+        <h5 class="card-title">Update Message</h5>
+        <div class="card-body">
+            <div>
+                <div>ApproximateNumberOfMenssages: <b>20</b></div>
+                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div> 
+                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card col">
+        <h5 class="card-title">ThankyouMessage</h5>
+        <div class="card-body">
+            <div>
+                <div>ApproximateNumberOfMenssages: <b>20</b></div>
+                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div>
+                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card col">
+        <h5 class="card-title">Withdraw Message</h5>
+        <div class="card-body">
+            <div>
+                <div>ApproximateNumberOfMenssages: <b>20</b></div>
+                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div>
+                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+
+            </div>
+        </div>
+    </div>
+</div>

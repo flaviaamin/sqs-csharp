@@ -48,6 +48,11 @@ namespace ReCall2.Services
             return recalls;
         }
 
+        public async Task<int> TotalQueue()
+        {
+            return await sqsAwsService.TotalQueue();
+        }
+
         public async Task<bool> DeleteRecall(string sqsId)
         {
             return await sqsAwsService.DeleteMessage(sqsId);

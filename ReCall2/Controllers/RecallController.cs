@@ -16,24 +16,22 @@ namespace ReCall2.Controllers
 {
     public class RecallController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public RecallController(ILogger<HomeController> logger)
-        {
-            recallService = new RecallService();
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
             return View();
         }
 
-        private RecallService recallService;
+        private RecallService recallService = new RecallService();
 
         public async Task<IActionResult> List()
         {
             ViewBag.Lista = await recallService.Recalls();
+            return View();
+        }
+
+        public async Task<IActionResult> Queues()
+        {
+            ViewBag.TotalQueue = await recallService.TotalQueue();
             return View();
         }
 
@@ -68,12 +66,6 @@ namespace ReCall2.Controllers
 
             //return StatusCode(200, recall);
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
