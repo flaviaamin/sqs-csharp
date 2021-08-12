@@ -3,9 +3,6 @@
     var lista = (List<Recall>)ViewBag.Lista;
 }
 
-<div class="mb-3">
-    <label for="description" class="form-label" style="margin-top:20px">Queues</label>
-</div>
 
 <style>
     .card-title {
@@ -13,24 +10,42 @@
         text-align: center;
         padding: 10px;
     }
+
     .card {
         width: 18rem;
         padding: 0px;
         margin: 0px 2px 0px 2px;
     }
-    .card-body{
+
+    .card-body {
         font-size: 12px;
     }
 </style>
 
-<div class="row">
+@if (ViewBag.Apagou != null)
+{
+    @if (Convert.ToBoolean(ViewBag.Apagou))
+    {
+        <div class="alert alert-success">
+           Item apagado com sucesso
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+           O item não pode ser apagado
+        </div>
+    }
+}
+
+<div class="row" style="margin-top: 40px">
     <div class="card">
         <h5 class="card-title">Create Message</h5>
         <div class="card-body">
             <div>
-                <div>ApproximateNumberOfMenssages: <b>@ViewBag.TotalQueue</b></div>
-                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div>
-                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>@ViewBag.TotalQueue</b></div>
+                <div>Delayed: <b>20</b></div>
+                <div>NotVisible: <b>20</b></div>
             </div>
         </div>
     </div>
@@ -39,21 +54,21 @@
         <h5 class="card-title">Update Message</h5>
         <div class="card-body">
             <div>
-                <div>ApproximateNumberOfMenssages: <b>20</b></div>
-                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div> 
-                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>20</b></div>
+                <div>Delayed: <b>20</b></div>
+                <div>NotVisible: <b>20</b></div>
 
             </div>
         </div>
     </div>
 
     <div class="card col">
-        <h5 class="card-title">ThankyouMessage</h5>
+        <h5 class="card-title">Sorry Message</h5>
         <div class="card-body">
             <div>
-                <div>ApproximateNumberOfMenssages: <b>20</b></div>
-                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div>
-                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>20</b></div>
+                <div>Delayed: <b>20</b></div>
+                <div>NotVisible: <b>20</b></div>
 
             </div>
         </div>
@@ -63,11 +78,49 @@
         <h5 class="card-title">Withdraw Message</h5>
         <div class="card-body">
             <div>
-                <div>ApproximateNumberOfMenssages: <b>20</b></div>
-                <div>AproximateNumberOfMessagesDelayed: <b>20</b></div>
-                <div>AproximateNumberOfMessagesNotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>20</b></div>
+                <div>Delayed: <b>20</b></div>
+                <div>NotVisible: <b>20</b></div>
 
             </div>
         </div>
     </div>
 </div>
+
+<form action="/recall/sqsdel" onsubmit="return confirm('Confirms?')" method="post">
+    <div id="deleteInformation" class="form-text" style="margin-top: 40px">
+        To delete the message, please chooce the queue and inform the Receipt handle
+    </div>
+
+
+    <input class="createMessage" type="radio" name="createMessage" id="createMessage" checked style="margin-top: 20px">
+    <label class="form-check-label" style="margin-right: 10px" for="createMessage">
+        Create Message
+    </label>
+
+
+    <input class="updateMessage" type="radio" name="updateMessage" id="updateMessage" disabled>
+    <label class="form-check-label" style="margin-right: 10px" for="updateMessage">
+        Update Message
+    </label>
+
+    <input class="sorryMessage" type="radio" name="sorryMessage" id="sorryMessage" disabled>
+    <label class="form-check-label" style="margin-right: 10px" for="sorryMessage">
+        Sorry Message
+    </label>
+
+    <input class="withdrawMessage" type="radio" name="Withdraw Message" id="Withdraw Message" disabled>
+    <label class="form-check-label" style="margin-right: 10px" for="Withdraw Message">
+        Withdraw Message
+    </label>
+
+
+    <div class="mb-3" style="margin-top: 20px">
+        <label for="receiptHandle" class="form-label">Receipt Handle</label>
+        <textarea class="form-control" name="sqsId" rows="3"></textarea>
+    </div>
+
+    <div class="col text-center">
+        <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </div>
+</form>

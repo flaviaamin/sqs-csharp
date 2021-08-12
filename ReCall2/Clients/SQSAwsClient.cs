@@ -31,11 +31,11 @@ namespace ReCall2.Clients
 
         public async Task<List<Message>> ListAWSSQS()
         {
-           // AmazonSQSClient sq = new AmazonSQSClient(awsId, awsKey);
-            AmazonSQSClient sq = new AmazonSQSClient(new BasicAWSCredentials(awsId, awsKey), RegionEndpoint.GetBySystemName("eu-central-1"));
+             AmazonSQSClient sq = new AmazonSQSClient(awsId, awsKey);
+           // AmazonSQSClient sq = new AmazonSQSClient(new BasicAWSCredentials(awsId, awsKey), RegionEndpoint.GetBySystemName("eu-central-1"));
             ReceiveMessageRequest rmr = new ReceiveMessageRequest();
             rmr.QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}";
-            //rmr.MaxNumberOfMessages = 10;
+            rmr.MaxNumberOfMessages = 10;
             ReceiveMessageResponse response = await sq.ReceiveMessageAsync(rmr);
             return (response.HttpStatusCode == System.Net.HttpStatusCode.OK) ? response.Messages : null;
         }
@@ -45,13 +45,13 @@ namespace ReCall2.Clients
             return (await this.ListAWSSQS()).Count;
         }
 
-        public async Task<bool> DeleteMessage(string sqsId)
+        public async Task<bool> DeleteMessage(string receiptHandle)
         {
             AmazonSQSClient sq = new AmazonSQSClient(awsId, awsKey);
             DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest();
 
             deleteMessageRequest.QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}";
-            deleteMessageRequest.ReceiptHandle = sqsId;
+            deleteMessageRequest.ReceiptHandle = receiptHandle;
 
             var response = await sq.DeleteMessageAsync(deleteMessageRequest);
 
@@ -60,13 +60,35 @@ namespace ReCall2.Clients
 
         public async Task<bool> SendAWSSQS(Recall recall)
         {
-            AmazonSQSClient sqsClient = new AmazonSQSClient(new BasicAWSCredentials(awsId, awsKey), RegionEndpoint.GetBySystemName("eu-central-1"));
-            SendMessageRequest sendMessageRequest = new SendMessageRequest();
+            //  AmazonSQSClient sqsClient = new AmazonSQSClient(new BasicAWSCredentials(awsId, awsKey), RegionEndpoint.GetBySystemName("eu-central-1"));
+            
+            AmazonSQSClient sqsClient = new AmazonSQSClient(awsId, awsKey);
+            var sendMessageRequest = new SendMessageRequest();
             sendMessageRequest.QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}";
             sendMessageRequest.MessageBody = JsonSerializer.Serialize(recall);
 
             var sendMessageResponse = await sqsClient.SendMessageAsync(sendMessageRequest);
             return sendMessageResponse.HttpStatusCode == System.Net.HttpStatusCode.OK;
+        }
+
+        public async Task<int> GetSqsCount()
+        {
+            AmazonSQSClient sqsClient = new AmazonSQSClient(awsId, awsKey);
+            var request = new GetQueueAttributesRequest { QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}" };
+            request.AttributeNames.Add("ApproximateNumberOfMessages");
+
+            var response = await sqsClient.GetQueueAttributesAsync(request);
+            return response.ApproximateNumberOfMessages;
+        }
+
+        public async Task<int> GetSqsNotVisibleCount()
+        {
+            AmazonSQSClient sqsClient = new AmazonSQSClient(awsId, awsKey);
+            var request = new GetQueueAttributesRequest { QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}" };
+            request.AttributeNames.Add("ApproximateNumberOfMessagesNotVisible");
+
+            var response = await sqsClient.GetQueueAttributesAsync(request);
+            return response.ApproximateNumberOfMessagesNotVisible;
         }
     }
 }

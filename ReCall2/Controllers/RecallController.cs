@@ -16,7 +16,7 @@ namespace ReCall2.Controllers
 {
     public class RecallController : Controller
     {
-        public IActionResult Index()
+        public IActionResult New()
         {
             return View();
         }
@@ -29,8 +29,9 @@ namespace ReCall2.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Queues()
+        public async Task<IActionResult> Queues(bool? apagou)
         {
+            if (apagou != null) ViewBag.Apagou = apagou;
             ViewBag.TotalQueue = await recallService.TotalQueue();
             return View();
         }
@@ -38,16 +39,22 @@ namespace ReCall2.Controllers
         [HttpPost]
         public async Task<IActionResult> SQSDel([FromForm] Recall recall)
         {
-            var success = await recallService.DeleteRecall(recall.SQSId);
-            if (success)
+            try
             {
-                Console.WriteLine("successfully deleted");
+                var success = await recallService.DeleteRecall(recall.SQSId);
+                if (success)
+                {
+                    Console.WriteLine("successfully deleted");
+                }
+                else
+                {
+                    Console.WriteLine("error when deleting from the queue");
+                }
+                //return View();
+
+                return Redirect("/?apagou=true");
             }
-            else
-            {
-                Console.WriteLine("error when deleting from the queue");
-            }
-            return View();
+            catch { return Redirect("/?apagou=false"); }
         }
 
         [HttpPost]
