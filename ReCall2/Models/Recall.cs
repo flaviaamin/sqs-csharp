@@ -14,7 +14,6 @@ namespace ReCall2.Models
                 return (type);
             }
         }
-        public string Environment { get; set; }
         public string Brand { get; set; }
         public string CallNumber { get; set; }
         public string CampaignId { get; set; }

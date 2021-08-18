@@ -13,15 +13,9 @@ namespace ReCall2.Services
 {
     public class RecallService
     {
-        public RecallService()
+        public RecallService(string queue = "CREATE_MESSAGE")
         {
-            this.sqsAwsService = new SQSAwsClient(
-                ConfigManager.AwsId,
-                ConfigManager.AwsKey,
-                ConfigManager.SqsHost,
-                ConfigManager.SqsId,
-                ConfigManager.SqsName
-            );
+            this.sqsAwsService = new SQSAwsClient(new ConfigManager(queue));
         }
 
         private SQSAwsClient sqsAwsService;
@@ -48,14 +42,19 @@ namespace ReCall2.Services
             return recalls;
         }
 
-        public async Task<int> TotalQueue()
-        {
-            return await sqsAwsService.TotalQueue();
-        }
-
         public async Task<bool> DeleteRecall(string sqsId)
         {
             return await sqsAwsService.DeleteMessage(sqsId);
+        }
+
+        public async Task<int> RecallCount()
+        {
+            return await sqsAwsService.GetSqsCount();
+        }
+
+        public async Task<int> RecallCountNotVisible()
+        {
+            return await sqsAwsService.GetSqsNotVisibleCount();
         }
 
         public async Task<bool> Save(Recall recall)

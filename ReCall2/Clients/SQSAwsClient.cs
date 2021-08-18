@@ -14,27 +14,19 @@ namespace ReCall2.Clients
 {
     public class SQSAwsClient
     {
-        public SQSAwsClient(string awsId, string awsKey, string hostSqs, string sqsId, string sqsName)
+        public SQSAwsClient(ConfigManager configManager)
         {
-            this.awsId = awsId;
-            this.awsKey = awsKey;
-            this.hostSqs = hostSqs;
-            this.sqsId = sqsId;
-            this.sqsName = sqsName;
+            this.configManager = configManager;
         }
 
-        private string awsId;
-        private string awsKey;
-        private string hostSqs;
-        private string sqsId;
-        private string sqsName;
+        private ConfigManager configManager;
 
         public async Task<List<Message>> ListAWSSQS()
         {
-             AmazonSQSClient sq = new AmazonSQSClient(awsId, awsKey);
+             AmazonSQSClient sq = new AmazonSQSClient(configManager.AwsId, configManager.AwsKey);
            // AmazonSQSClient sq = new AmazonSQSClient(new BasicAWSCredentials(awsId, awsKey), RegionEndpoint.GetBySystemName("eu-central-1"));
             ReceiveMessageRequest rmr = new ReceiveMessageRequest();
-            rmr.QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}";
+            rmr.QueueUrl = $"{configManager.SqsHost}/{configManager.SqsId}/{configManager.SqsName}";
             rmr.MaxNumberOfMessages = 10;
             ReceiveMessageResponse response = await sq.ReceiveMessageAsync(rmr);
             return (response.HttpStatusCode == System.Net.HttpStatusCode.OK) ? response.Messages : null;
@@ -47,10 +39,10 @@ namespace ReCall2.Clients
 
         public async Task<bool> DeleteMessage(string receiptHandle)
         {
-            AmazonSQSClient sq = new AmazonSQSClient(awsId, awsKey);
+            AmazonSQSClient sq = new AmazonSQSClient(configManager.AwsId, configManager.AwsKey);
             DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest();
 
-            deleteMessageRequest.QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}";
+            deleteMessageRequest.QueueUrl = $"{configManager.SqsHost}/{configManager.SqsId}/{configManager.SqsName}";
             deleteMessageRequest.ReceiptHandle = receiptHandle;
 
             var response = await sq.DeleteMessageAsync(deleteMessageRequest);
@@ -62,9 +54,9 @@ namespace ReCall2.Clients
         {
             //  AmazonSQSClient sqsClient = new AmazonSQSClient(new BasicAWSCredentials(awsId, awsKey), RegionEndpoint.GetBySystemName("eu-central-1"));
             
-            AmazonSQSClient sqsClient = new AmazonSQSClient(awsId, awsKey);
+            AmazonSQSClient sqsClient = new AmazonSQSClient(configManager.AwsId, configManager.AwsKey);
             var sendMessageRequest = new SendMessageRequest();
-            sendMessageRequest.QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}";
+            sendMessageRequest.QueueUrl = $"{configManager.SqsHost}/{configManager.SqsId}/{configManager.SqsName}";
             sendMessageRequest.MessageBody = JsonSerializer.Serialize(recall);
 
             var sendMessageResponse = await sqsClient.SendMessageAsync(sendMessageRequest);
@@ -73,8 +65,8 @@ namespace ReCall2.Clients
 
         public async Task<int> GetSqsCount()
         {
-            AmazonSQSClient sqsClient = new AmazonSQSClient(awsId, awsKey);
-            var request = new GetQueueAttributesRequest { QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}" };
+            AmazonSQSClient sqsClient = new AmazonSQSClient(configManager.AwsId, configManager.AwsKey);
+            var request = new GetQueueAttributesRequest { QueueUrl = $"{configManager.SqsHost}/{configManager.SqsId}/{configManager.SqsName}" };
             request.AttributeNames.Add("ApproximateNumberOfMessages");
 
             var response = await sqsClient.GetQueueAttributesAsync(request);
@@ -83,8 +75,8 @@ namespace ReCall2.Clients
 
         public async Task<int> GetSqsNotVisibleCount()
         {
-            AmazonSQSClient sqsClient = new AmazonSQSClient(awsId, awsKey);
-            var request = new GetQueueAttributesRequest { QueueUrl = $"{hostSqs}/{sqsId}/{sqsName}" };
+            AmazonSQSClient sqsClient = new AmazonSQSClient(configManager.AwsId, configManager.AwsKey);
+            var request = new GetQueueAttributesRequest { QueueUrl = $"{configManager.SqsHost}/{configManager.SqsId}/{configManager.SqsName}" };
             request.AttributeNames.Add("ApproximateNumberOfMessagesNotVisible");
 
             var response = await sqsClient.GetQueueAttributesAsync(request);

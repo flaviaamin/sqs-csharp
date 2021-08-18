@@ -22,19 +22,19 @@
     }
 </style>
 
-@if (ViewBag.Apagou != null)
+@if (ViewBag.Delete != null)
 {
-    @if (Convert.ToBoolean(ViewBag.Apagou))
+    @if (Convert.ToBoolean(ViewBag.Delete))
     {
-        <div class="alert alert-success">
-           Item apagado com sucesso
-        </div>
+<div class="alert alert-success">
+    Item successfully deleted
+</div>
     }
     else
     {
-        <div class="alert alert-danger">
-           O item não pode ser apagado
-        </div>
+<div class="alert alert-danger">
+    Item can't be deleted
+</div>
     }
 }
 
@@ -43,9 +43,9 @@
         <h5 class="card-title">Create Message</h5>
         <div class="card-body">
             <div>
-                <div>Number Of Messages: <b>@ViewBag.TotalQueue</b></div>
-                <div>Delayed: <b>20</b></div>
-                <div>NotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>@ViewBag.TotalQueueCreate</b></div>
+                <div>Delayed: <b>@ViewBag.TotalQueueCreate</b></div>
+                <div>Not Visible: <b>@ViewBag.TotalQueueNotVisibleCreate</b></div>
             </div>
         </div>
     </div>
@@ -54,9 +54,9 @@
         <h5 class="card-title">Update Message</h5>
         <div class="card-body">
             <div>
-                <div>Number Of Messages: <b>20</b></div>
-                <div>Delayed: <b>20</b></div>
-                <div>NotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>@ViewBag.TotalQueueUpdate</b></div>
+                <div>Delayed: <b>@ViewBag.TotalQueueUpdate</b></div>
+                <div>Not Visible: <b>@ViewBag.TotalQueueNotVisibleUpdate</b></div>
 
             </div>
         </div>
@@ -66,9 +66,9 @@
         <h5 class="card-title">Sorry Message</h5>
         <div class="card-body">
             <div>
-                <div>Number Of Messages: <b>20</b></div>
-                <div>Delayed: <b>20</b></div>
-                <div>NotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>@ViewBag.TotalQueueSorry</b></div>
+                <div>Delayed: <b>@ViewBag.TotalQueueSorry</b></div>
+                <div>Not Visible: <b>@ViewBag.TotalQueueNotVisibleSorry</b></div>
 
             </div>
         </div>
@@ -78,9 +78,9 @@
         <h5 class="card-title">Withdraw Message</h5>
         <div class="card-body">
             <div>
-                <div>Number Of Messages: <b>20</b></div>
-                <div>Delayed: <b>20</b></div>
-                <div>NotVisible: <b>20</b></div>
+                <div>Number Of Messages: <b>@ViewBag.TotalQueueWithdraw</b></div>
+                <div>Delayed: <b>@ViewBag.TotalQueueWithdraw</b></div>
+                <div>NotVisible: <b>@ViewBag.TotalQueueNotVisibleWithdraw</b></div>
 
             </div>
         </div>
@@ -89,29 +89,29 @@
 
 <form action="/recall/sqsdel" onsubmit="return confirm('Confirms?')" method="post">
     <div id="deleteInformation" class="form-text" style="margin-top: 40px">
-        To delete the message, please chooce the queue and inform the Receipt handle
+        To delete the message, please choose the queue and inform the Receipt handle
     </div>
 
 
-    <input class="createMessage" type="radio" name="createMessage" id="createMessage" checked style="margin-top: 20px">
+    <input class="createMessage" type="radio" name="environment" id="createMessage"  checked style="margin-top: 20px" value="CREATE_MESSAGE">
     <label class="form-check-label" style="margin-right: 10px" for="createMessage">
         Create Message
     </label>
 
 
-    <input class="updateMessage" type="radio" name="updateMessage" id="updateMessage" disabled>
+    <input class="updateMessage" type="radio" name="environment" id="updateMessage" value="UPDATE_MESSAGE" >
     <label class="form-check-label" style="margin-right: 10px" for="updateMessage">
         Update Message
     </label>
 
-    <input class="sorryMessage" type="radio" name="sorryMessage" id="sorryMessage" disabled>
+    <input class="sorryMessage" type="radio" name="environment" id="sorryMessage" value="SORRY_MESSEGE" >
     <label class="form-check-label" style="margin-right: 10px" for="sorryMessage">
         Sorry Message
     </label>
 
-    <input class="withdrawMessage" type="radio" name="Withdraw Message" id="Withdraw Message" disabled>
+    <input class="withdrawMessage" type="radio" name="environment" id="Withdraw Message" value="WITHDRAW_MESSEGE" >
     <label class="form-check-label" style="margin-right: 10px" for="Withdraw Message">
-        Withdraw Message
+        Withdraw Message 
     </label>
 
 

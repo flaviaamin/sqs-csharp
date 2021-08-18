@@ -21,27 +21,41 @@ namespace ReCall2.Controllers
             return View();
         }
 
-        private RecallService recallService = new RecallService();
-
         public async Task<IActionResult> List()
         {
-            ViewBag.Lista = await recallService.Recalls();
+            ViewBag.Lista = await new RecallService().Recalls();
             return View();
         }
 
-        public async Task<IActionResult> Queues(bool? apagou)
+        public async Task<IActionResult> Queues(bool? delete)
         {
-            if (apagou != null) ViewBag.Apagou = apagou;
-            ViewBag.TotalQueue = await recallService.TotalQueue();
+            if (delete != null) ViewBag.Delete = delete;
+
+            RecallService recallServiceCreate = new RecallService("CREATE_MESSAGE");
+            ViewBag.TotalQueueCreate = await recallServiceCreate.RecallCount();
+            ViewBag.TotalQueueNotVisibleCreate = await recallServiceCreate.RecallCountNotVisible();
+
+            RecallService recallServiceUpdate = new RecallService("UPDATE_MESSAGE");
+            ViewBag.TotalQueueUpdate = await recallServiceUpdate.RecallCount();
+            ViewBag.TotalQueueNotVisibleUpdate = await recallServiceUpdate.RecallCountNotVisible();
+
+            RecallService recallServiceSorry = new RecallService("SORRY_MESSAGE");
+            ViewBag.TotalQueueSorry = await recallServiceSorry.RecallCount();
+            ViewBag.TotalQueueNotVisibleSorry = await recallServiceSorry.RecallCountNotVisible();
+
+            RecallService recallServiceWithDraw = new RecallService("WITHDRAW_MESSAGE");
+            ViewBag.TotalQueueWithDraw = await recallServiceWithDraw.RecallCount();
+            ViewBag.TotalQueueNotVisibleWithDraw = await recallServiceWithDraw.RecallCountNotVisible();
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> SQSDel([FromForm] Recall recall)
+        public async Task<IActionResult> SQSDel(string environment, [FromForm] Recall recall)
         {
             try
             {
-                var success = await recallService.DeleteRecall(recall.SQSId);
+                var success = await new RecallService(environment).DeleteRecall(recall.SQSId);
                 if (success)
                 {
                     Console.WriteLine("successfully deleted");
@@ -52,15 +66,15 @@ namespace ReCall2.Controllers
                 }
                 //return View();
 
-                return Redirect("/?apagou=true");
+                return Redirect("/?delete=true");
             }
-            catch { return Redirect("/?apagou=false"); }
+            catch { return Redirect("/?delete=false"); }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(Recall recall)
+        public async Task<IActionResult> Register(string environment, Recall recall)
         {
-            var success = await recallService.Save(recall);
+            var success = await new RecallService(environment).Save(recall);
 
             if (success)
             {

@@ -17,26 +17,6 @@ namespace ReCall2
     {
         public Startup(IConfiguration configuration)
         {
-            var queue = "CREATE_MESSAGE";
-            var pathFile = Path.Combine(Environment.CurrentDirectory, "appsettings.json");
-            if (File.Exists(pathFile))
-            {
-                JToken jAppSettings = JToken.Parse(System.IO.File.ReadAllText(pathFile));
-                ConfigManager.AwsId = jAppSettings["awsId"].ToString();
-                ConfigManager.AwsKey = jAppSettings["awsKey"].ToString();
-                ConfigManager.SqsHost = jAppSettings["queue"][queue]["sqsHost"].ToString();
-                ConfigManager.SqsId = jAppSettings["queue"][queue]["sqsId"].ToString();
-                ConfigManager.SqsName = jAppSettings["queue"][queue]["sqsName"].ToString();
-            }
-            else
-            {
-                ConfigManager.AwsId = Environment.GetEnvironmentVariable("AWS_ID");
-                ConfigManager.AwsKey = Environment.GetEnvironmentVariable("AWS_KEY");
-                ConfigManager.SqsHost = Environment.GetEnvironmentVariable($"{queue}_SQS_HOST");
-                ConfigManager.SqsId = Environment.GetEnvironmentVariable($"{queue}_SQS_ID");
-                ConfigManager.SqsName = Environment.GetEnvironmentVariable($"{queue}_SQS_NAME");
-            }
-
             Configuration = configuration;
         }
 
