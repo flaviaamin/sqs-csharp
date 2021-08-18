@@ -38,9 +38,10 @@ namespace ReCall2.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Queues(bool? delete)
+        public async Task<IActionResult> Queues(bool? delete, string queue)
         {
             if (delete != null) ViewBag.Delete = delete;
+            if (queue != null) ViewBag.Queue = queue;
 
             RecallEnvironment env = getRecallEnv();
             
@@ -80,9 +81,9 @@ namespace ReCall2.Controllers
                 }
                 //return View();
 
-                return Redirect("/?delete=true");
+                return Redirect("/?delete=true&queue=" + queue);
             }
-            catch { return Redirect("/?delete=false"); }
+            catch { return Redirect("/?delete=false&queue=" + queue); }
         }
 
         [HttpPost]

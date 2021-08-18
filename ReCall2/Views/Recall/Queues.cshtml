@@ -27,13 +27,13 @@
     @if (Convert.ToBoolean(ViewBag.Delete))
     {
 <div class="alert alert-success">
-    Item successfully deleted
+    Item of queue (@ViewBag.queue) successfully deleted
 </div>
     }
     else
     {
 <div class="alert alert-danger">
-    Item can't be deleted
+    Item can't be deleted queue (@ViewBag.queue) item
 </div>
     }
 }
