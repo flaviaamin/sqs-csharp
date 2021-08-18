@@ -10,12 +10,13 @@ using System.IO;
 using System.Text.Json;
 using ReCall2.Models;
 using Newtonsoft.Json.Linq;
+using ReCall2.Enuns;
 
 namespace ReCall2
 {
     public class ConfigManager
     {
-        public ConfigManager(Environment env, string queue)
+        public ConfigManager(RecallEnvironment env, string queue)
         {
             this.setup(env, queue);
         }
@@ -26,7 +27,7 @@ namespace ReCall2
         public string SqsId { get; set; }
         public string SqsName { get; set; }
 
-        private void setup(Environment env, string queue)
+        private void setup(RecallEnvironment env, string queue)
         {
             var pathFile = Path.Combine(Environment.CurrentDirectory, "appsettings.json");
             if (File.Exists(pathFile))
@@ -34,9 +35,11 @@ namespace ReCall2
                 JToken jAppSettings = JToken.Parse(System.IO.File.ReadAllText(pathFile));
                 this.AwsId = jAppSettings["awsId"].ToString();
                 this.AwsKey = jAppSettings["awsKey"].ToString();
-                this.SqsHost = jAppSettings["queue"][env][queue]["sqsHost"].ToString();
-                this.SqsId = jAppSettings["queue"][env][queue]["sqsId"].ToString();
-                this.SqsName = jAppSettings["queue"][env][queue]["sqsName"].ToString();
+
+                string envStringConvetida = env.ToString();
+                this.SqsHost = jAppSettings["queue"][envStringConvetida][queue]["sqsHost"].ToString();
+                this.SqsId = jAppSettings["queue"][envStringConvetida][queue]["sqsId"].ToString();
+                this.SqsName = jAppSettings["queue"][envStringConvetida][queue]["sqsName"].ToString();
             }
             else
             {

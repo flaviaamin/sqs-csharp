@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ReCall2.Clients;
+using ReCall2.Enuns;
 using ReCall2.Models;
 using ReCall2.Services;
 using System;
@@ -21,9 +22,19 @@ namespace ReCall2.Controllers
             return View();
         }
 
+        private RecallEnvironment getRecallEnv()
+        {
+            try
+            {
+                string envCookie = HttpContext.Request.Cookies["env"];
+                return Enum.Parse<RecallEnvironment>(envCookie);
+            }
+            catch { return RecallEnvironment.DLY; }
+        }
+
         public async Task<IActionResult> List()
         {
-            ViewBag.Lista = await new RecallService().Recalls();
+            ViewBag.Lista = await new RecallService(getRecallEnv()).Recalls();
             return View();
         }
 
@@ -31,19 +42,21 @@ namespace ReCall2.Controllers
         {
             if (delete != null) ViewBag.Delete = delete;
 
-            RecallService recallServiceCreate = new RecallService("CREATE_MESSAGE");
+            RecallEnvironment env = getRecallEnv();
+            
+            RecallService recallServiceCreate = new RecallService(env, "CREATE_MESSAGE");
             ViewBag.TotalQueueCreate = await recallServiceCreate.RecallCount();
             ViewBag.TotalQueueNotVisibleCreate = await recallServiceCreate.RecallCountNotVisible();
 
-            RecallService recallServiceUpdate = new RecallService("UPDATE_MESSAGE");
+            RecallService recallServiceUpdate = new RecallService(env, "UPDATE_MESSAGE");
             ViewBag.TotalQueueUpdate = await recallServiceUpdate.RecallCount();
             ViewBag.TotalQueueNotVisibleUpdate = await recallServiceUpdate.RecallCountNotVisible();
 
-            RecallService recallServiceSorry = new RecallService("SORRY_MESSAGE");
+            RecallService recallServiceSorry = new RecallService(env, "SORRY_MESSAGE");
             ViewBag.TotalQueueSorry = await recallServiceSorry.RecallCount();
             ViewBag.TotalQueueNotVisibleSorry = await recallServiceSorry.RecallCountNotVisible();
 
-            RecallService recallServiceWithDraw = new RecallService("WITHDRAW_MESSAGE");
+            RecallService recallServiceWithDraw = new RecallService(env, "WITHDRAW_MESSAGE");
             ViewBag.TotalQueueWithDraw = await recallServiceWithDraw.RecallCount();
             ViewBag.TotalQueueNotVisibleWithDraw = await recallServiceWithDraw.RecallCountNotVisible();
 
@@ -51,11 +64,12 @@ namespace ReCall2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SQSDel(string environment, [FromForm] Recall recall)
+        public async Task<IActionResult> SQSDel(string queue, [FromForm] Recall recall)
         {
             try
             {
-                var success = await new RecallService(environment).DeleteRecall(recall.SQSId);
+                RecallEnvironment env = getRecallEnv();
+                var success = await new RecallService(env, queue).DeleteRecall(recall.SQSId);
                 if (success)
                 {
                     Console.WriteLine("successfully deleted");
@@ -72,9 +86,10 @@ namespace ReCall2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string environment, Recall recall)
+        public async Task<IActionResult> Register(Recall recall)
         {
-            var success = await new RecallService(environment).Save(recall);
+            RecallEnvironment env = getRecallEnv();
+            var success = await new RecallService(env).Save(recall);
 
             if (success)
             {

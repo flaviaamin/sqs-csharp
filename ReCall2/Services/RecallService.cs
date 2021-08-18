@@ -8,14 +8,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Amazon.SQS.Model;
+using ReCall2.Enuns;
 
 namespace ReCall2.Services
 {
     public class RecallService
     {
-        public RecallService(string queue = "CREATE_MESSAGE")
+        public RecallService(RecallEnvironment env = RecallEnvironment.DLY, string queue = "CREATE_MESSAGE")
         {
-            this.sqsAwsService = new SQSAwsClient(new ConfigManager(queue));
+            this.sqsAwsService = new SQSAwsClient(new ConfigManager(env, queue));
         }
 
         private SQSAwsClient sqsAwsService;
